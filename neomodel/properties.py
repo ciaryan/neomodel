@@ -403,11 +403,15 @@ class DateProperty(Property):
 
     @validator
     def deflate(self, value):
+        if isinstance(value, str): # Added this line
+            try:
+                value = datetime.strptime(value, "%Y-%m-%d").date()
+            except ValueError:
+                raise ValueError(f"Invalid date format. Expected YYYY-MM-DD, got {value}")
         if not isinstance(value, date):
             msg = f"datetime.date object expected, got {repr(value)}"
             raise ValueError(msg)
         return value.isoformat()
-
 
 class DateTimeFormatProperty(Property):
     """

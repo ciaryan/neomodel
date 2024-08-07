@@ -165,6 +165,22 @@ def test_date():
 
     assert prop.inflate(time.DateTime(2007, 9, 27)) == date(2007, 9, 27)
 
+def test_date_string_format():
+    prop = DateProperty()
+    prop.name = "foo"
+    prop.owner = FooBar
+
+    # Test deflate with a valid string date
+    assert prop.deflate("2012-12-15") == "2012-12-15"
+
+    # Test deflate with an invalid string date
+    with raises(ValueError, match=r"Invalid date format. Expected YYYY-MM-DD, got invalid-date"):
+        prop.deflate("invalid-date")
+
+    # Test deflate with a non-date type
+    with raises(ValueError, match=r"datetime.date object expected, got 'not-a-date'"):
+        prop.deflate("not-a-date")
+
 
 def test_datetime_format():
     some_format = "%Y-%m-%d %H:%M:%S"
